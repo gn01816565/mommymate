@@ -1,5 +1,5 @@
 // Service Worker for PWA
-const CACHE_NAME = 'mommymate-v1.4.0';
+const CACHE_NAME = 'mommymate-v1.5.1';
 const urlsToCache = [
   './',
   './index.html',
@@ -33,40 +33,48 @@ self.addEventListener('activate', (event) => {
 
 // 攔截請求
 self.addEventListener('fetch', (event) => {
+  const url = event.request.url;
+  
+  // 只處理 http/https 請求
+  if (!url.startsWith('http')) {
+    return;
+  }
+  
   // 只快取 GET 請求
   if (event.request.method !== 'GET') {
     return;
   }
 
   // API 請求不快取
-  if (event.request.url.includes('/api/')) {
+  if (url.includes('/api/')) {
     return;
   }
 
+  // Network First 策略（優先使用網路）
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then((response) => {
-        // 快取命中，返回快取
-        if (response) {
+        // 檢查是否為有效回應
+        if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
 
-        // 網路請求
-        return fetch(event.request).then((response) => {
-          // 檢查是否為有效回應
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
+        // 複製回應並快取
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME)
+          .then((cache) => {
+            cache.put(event.request, responseToCache);
+          })
+          .catch((err) => {
+            // 忽略快取錯誤（例如 chrome-extension）
+            console.log('Cache put failed:', err.message);
+          });
 
-          // 複製回應並快取
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-
-          return response;
-        });
+        return response;
+      })
+      .catch(() => {
+        // 網路失敗時使用快取
+        return caches.match(event.request);
       })
   );
 });

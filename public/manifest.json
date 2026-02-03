@@ -1,0 +1,59 @@
+{
+  "name": "MommyMate - AI 孕期助手",
+  "short_name": "MommyMate",
+  "description": "AI 驅動的懷孕管理應用，陪伴您與寶寶的每一天",
+  "start_url": "/mommymate/",
+  "display": "standalone",
+  "background_color": "#fdf2f8",
+  "theme_color": "#ec4899",
+  "orientation": "portrait",
+  "categories": ["health", "lifestyle"],
+  "lang": "zh-TW",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/mommymate/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/mommymate/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/mommymate/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "platform": "narrow"
+    },
+    {
+      "src": "/mommymate/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "platform": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "AI 聊天",
+      "short_name": "聊天",
+      "description": "與 AI 助手對話",
+      "url": "/mommymate/?chat",
+      "icons": [{ "src": "/mommymate/icon-chat.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "孕期時間軸",
+      "short_name": "時間軸",
+      "description": "查看 40 週孕期追蹤",
+      "url": "/mommymate/?timeline",
+      "icons": [{ "src": "/mommymate/icon-timeline.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

@@ -4,16 +4,18 @@ import DetailView from './components/DetailView';
 import ChatWidget from './components/ChatWidget';
 import { PREGNANCY_DATA } from './constants';
 import { WeekData } from './types';
+import { useDarkMode } from './hooks/useDarkMode';
 
 const App: React.FC = () => {
   const [selectedWeek, setSelectedWeek] = useState<number>(PREGNANCY_DATA[0].week);
+  const { isDark, toggleDarkMode } = useDarkMode();
   
   const currentData = PREGNANCY_DATA.find(d => d.week === selectedWeek) || PREGNANCY_DATA[0];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-blue-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
       {/* Navbar */}
-      <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-pink-100 shadow-sm">
+      <nav className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md sticky top-0 z-40 border-b border-pink-100 dark:border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -22,8 +24,22 @@ const App: React.FC = () => {
                 MommyMate
               </h1>
             </div>
-            <div className="text-sm text-gray-500 hidden md:block">
-                陪伴您與寶寶的每一天
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-gray-500 dark:text-gray-400 hidden md:block">
+                  陪伴您與寶寶的每一天
+              </div>
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                title={isDark ? '切換到淺色模式' : '切換到深色模式'}
+              >
+                {isDark ? (
+                  <span className="text-xl">☀️</span>
+                ) : (
+                  <span className="text-xl">🌙</span>
+                )}
+              </button>
             </div>
           </div>
         </div>
@@ -40,11 +56,11 @@ const App: React.FC = () => {
 
           {/* Mobile Selector (Visible only on small screens) */}
           <div className="lg:hidden mb-4">
-             <label className="block text-sm font-medium text-gray-700 mb-1">選擇懷孕週數</label>
+             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">選擇懷孕週數</label>
              <select 
                 value={selectedWeek}
                 onChange={(e) => setSelectedWeek(Number(e.target.value))}
-                className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 py-3 px-4 bg-white"
+                className="block w-full rounded-lg border-gray-300 dark:border-gray-600 shadow-sm focus:border-pink-500 focus:ring-pink-500 py-3 px-4 bg-white dark:bg-gray-700 dark:text-white"
              >
                  {PREGNANCY_DATA.map((d) => (
                      <option key={d.week} value={d.week}>

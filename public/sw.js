@@ -1,8 +1,9 @@
 // Service Worker for PWA
-const CACHE_NAME = 'mommymate-v1.3.2';
+const CACHE_NAME = 'mommymate-v1.4.0';
 const urlsToCache = [
-  '/mommymate/',
-  '/mommymate/index.html',
+  './',
+  './index.html',
+  './favicon.svg'
 ];
 
 // 安裝 Service Worker

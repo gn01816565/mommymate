@@ -117,7 +117,7 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-xl shadow-lg overflow-hidden relative">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden relative transition-colors">
       {/* Modals */}
       {showNutritionGuide && (
         <NutritionGuide onClose={() => setShowNutritionGuide(false)} />
@@ -155,42 +155,42 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200">
+      <div className="flex border-b border-gray-200 dark:border-gray-700">
         <button 
           onClick={() => setActiveTab('overview')}
-          className={`flex-1 py-4 text-center font-medium transition-colors ${activeTab === 'overview' ? 'text-pink-600 border-b-2 border-pink-600 bg-pink-50' : 'text-gray-500 hover:text-pink-400'}`}
+          className={`flex-1 py-4 text-center font-medium transition-colors ${activeTab === 'overview' ? 'text-pink-600 dark:text-pink-400 border-b-2 border-pink-600 dark:border-pink-400 bg-pink-50 dark:bg-pink-900/20' : 'text-gray-500 dark:text-gray-400 hover:text-pink-400 dark:hover:text-pink-300'}`}
         >
           總覽與建議
         </button>
         <button 
           onClick={() => setActiveTab('checkups')}
-          className={`flex-1 py-4 text-center font-medium transition-colors ${activeTab === 'checkups' ? 'text-pink-600 border-b-2 border-pink-600 bg-pink-50' : 'text-gray-500 hover:text-pink-400'}`}
+          className={`flex-1 py-4 text-center font-medium transition-colors ${activeTab === 'checkups' ? 'text-pink-600 dark:text-pink-400 border-b-2 border-pink-600 dark:border-pink-400 bg-pink-50 dark:bg-pink-900/20' : 'text-gray-500 dark:text-gray-400 hover:text-pink-400 dark:hover:text-pink-300'}`}
         >
           檢查與補助
         </button>
         <button 
           onClick={() => setActiveTab('todo')}
-          className={`flex-1 py-4 text-center font-medium transition-colors ${activeTab === 'todo' ? 'text-pink-600 border-b-2 border-pink-600 bg-pink-50' : 'text-gray-500 hover:text-pink-400'}`}
+          className={`flex-1 py-4 text-center font-medium transition-colors ${activeTab === 'todo' ? 'text-pink-600 dark:text-pink-400 border-b-2 border-pink-600 dark:border-pink-400 bg-pink-50 dark:bg-pink-900/20' : 'text-gray-500 dark:text-gray-400 hover:text-pink-400 dark:hover:text-pink-300'}`}
         >
           待辦與清單
         </button>
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900/50">
         
         {/* TAB: OVERVIEW */}
         {activeTab === 'overview' && (
             <div className="space-y-6">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <p className="text-gray-700 leading-relaxed text-lg mb-4">{data.description}</p>
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg mb-4">{data.description}</p>
                     
                     {/* Dad's Corner */}
-                    <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl shadow-sm mb-6">
-                        <h3 className="flex items-center text-blue-800 font-bold mb-2">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 dark:border-blue-400 p-4 rounded-r-xl shadow-sm mb-6">
+                        <h3 className="flex items-center text-blue-800 dark:text-blue-300 font-bold mb-2">
                             <span className="text-xl mr-2">🦸‍♂️</span> 準爸爸專區 (Dad's Corner)
                         </h3>
-                        <p className="text-blue-700 text-sm leading-relaxed">
+                        <p className="text-blue-700 dark:text-blue-300 text-sm leading-relaxed">
                             {data.dadTips}
                         </p>
                     </div>
@@ -218,20 +218,20 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
                 </div>
 
                 {/* AI & Media Generation Section */}
-                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-xl border border-indigo-100">
+                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-xl border border-indigo-100 dark:border-indigo-800">
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-bold text-indigo-900 flex items-center">
+                        <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 flex items-center">
                             <span className="mr-2">✨</span> AI 智能助手
                         </h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Advice Card */}
-                        <div className="bg-white p-4 rounded-lg shadow-sm">
-                            <h4 className="font-bold text-gray-800 mb-2">本週建議</h4>
+                        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                            <h4 className="font-bold text-gray-800 dark:text-gray-200 mb-2">本週建議</h4>
                             {!aiAdvice ? (
                                 <div className="text-center py-6">
-                                    <p className="text-gray-500 text-sm mb-4">獲取針對第 {data.week} 週的詳細護理建議</p>
+                                    <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">獲取針對第 {data.week} 週的詳細護理建議</p>
                                     <button 
                                         onClick={handleGetAiAdvice}
                                         disabled={loadingAi}

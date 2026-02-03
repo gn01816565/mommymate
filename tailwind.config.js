@@ -2,8 +2,11 @@
 export default {
   content: [
     "./index.html",
-    "./*.tsx",
+    "./index.tsx",
+    "./App.tsx",
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./hooks/**/*.{js,ts,jsx,tsx}",
+    "./i18n/**/*.{js,ts,jsx,tsx}",
     "./services/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: 'class',

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { chatWithDoula } from '../services/geminiService';
+import { chatWithDoula } from '../services/geminiServiceSecure';
 import { ChatMessage } from '../types';
 
 interface ChatWidgetProps {

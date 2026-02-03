@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: mommymate_app
     ports:
-      - "127.0.0.1:8082:80"
+      - "127.0.0.1:8086:80"
     environment:
       - NODE_ENV=production
     deploy:
@@ -27,6 +27,34 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    depends_on:
+      - api-proxy
+
+  api-proxy:
+    build:
+      context: ./api-server
+      dockerfile: Dockerfile
+    container_name: mommymate_api_proxy
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+    networks:
+      - showgan_web-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 networks:
   showgan_web-network:

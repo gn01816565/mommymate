@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { WeekData, AiAdviceResult } from '../types';
-import { getWeekAdvice, generateBabyVideo, generateWeekNarration, playRawAudio } from '../services/geminiService';
+import { getWeekAdvice, generateWeekNarration, playRawAudio } from '../services/geminiServiceSecure';
 import ReactMarkdown from 'react-markdown';
 import NutritionGuide from './NutritionGuide';
 import BudgetGuide from './BudgetGuide';
@@ -21,8 +21,7 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
   const [showShoppingList, setShowShoppingList] = useState<boolean>(false);
   const [showSubsidiesGuide, setShowSubsidiesGuide] = useState<boolean>(false);
   
-  // Video & Audio Generation State
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  // Audio Generation State
   const [audioBase64, setAudioBase64] = useState<string | null>(null);
   const [generatingMedia, setGeneratingMedia] = useState<boolean>(false);
   const [mediaError, setMediaError] = useState<string | null>(null);
@@ -31,7 +30,6 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
     // Reset states when week changes
     setAiAdvice(null);
     setLoadingAi(false);
-    setVideoUrl(null);
     setAudioBase64(null);
     setGeneratingMedia(false);
     setMediaError(null);
@@ -63,13 +61,9 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
             }
         }
 
-        // 2. Generate Video and Audio in parallel
-        const videoPromise = generateBabyVideo(data.week, data.babySize);
-        const audioPromise = generateWeekNarration(data.week, data.description);
-
-        const [url, audioData] = await Promise.all([videoPromise, audioPromise]);
+        // 2. Generate Audio only (Image generation requires paid account)
+        const audioData = await generateWeekNarration(data.week, data.description);
         
-        setVideoUrl(url);
         setAudioBase64(audioData);
         
         // Auto-play audio if available
@@ -79,14 +73,23 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
 
     } catch (error: any) {
         console.error("Media gen failed", error);
-        const errMsg = error?.toString() || "";
+        const errMsg = error?.message || error?.toString() || "";
         
-        const aiStudio = (window as any).aistudio;
-        if (errMsg.includes("Requested entity was not found") && aiStudio) {
-             await aiStudio.openSelectKey();
-             setMediaError("API Key 驗證失敗，請重新選擇 Key 後再試一次。");
-        } else {
-             setMediaError("生成失敗，請稍後再試。");
+        // 檢查是否為額度用完
+        if (errMsg.includes('quota') || errMsg.includes('rate limit') || errMsg.includes('429')) {
+            setMediaError("⚠️ 免費額度已用完\n\n請明天再試，或升級至付費版本。");
+        }
+        // 檢查是否為認證錯誤
+        else if (errMsg.includes('401') || errMsg.includes('403') || errMsg.includes('認證')) {
+            setMediaError("🔐 API 認證失敗\n\n請聯繫管理員檢查設定。");
+        }
+        // 檢查是否為網路錯誤
+        else if (errMsg.includes('network') || errMsg.includes('fetch') || errMsg.includes('網路')) {
+            setMediaError("📡 網路連線問題\n\n請檢查網路後再試。");
+        }
+        // 預設錯誤
+        else {
+            setMediaError("❌ 語音生成失敗\n\n請稍後再試。");
         }
     } finally {
         setGeneratingMedia(false);
@@ -262,34 +265,40 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
 
                         {/* Media Card */}
                         <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col">
-                            <h4 className="font-bold text-gray-800 mb-2">寶寶模擬影像 & 語音</h4>
+                            <h4 className="font-bold text-gray-800 mb-2">🎵 AI 語音導覽</h4>
                             
-                            <div className="flex-1 flex flex-col items-center justify-center min-h-[160px] bg-black/5 rounded-lg overflow-hidden relative">
+                            <div className="flex-1 flex flex-col items-center justify-center min-h-[100px] bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg overflow-hidden relative p-4">
                                 {generatingMedia ? (
                                     <div className="flex flex-col items-center">
                                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-2"></div>
-                                        <p className="text-xs text-gray-500">正在生成影像與語音 (約需 10-20 秒)...</p>
+                                        <p className="text-xs text-gray-500">正在生成語音導覽 (約需 3-5 秒)...</p>
                                     </div>
-                                ) : videoUrl ? (
-                                    <div className="w-full h-full flex flex-col">
-                                        <video src={videoUrl} controls className="w-full h-auto max-h-48 object-contain bg-black" />
-                                        {audioBase64 && (
-                                            <div className="flex items-center justify-center p-2 bg-gray-100 w-full mt-auto">
-                                                <button onClick={handlePlayAudio} className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center">
-                                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" /></svg>
-                                                    重播語音導覽
-                                                </button>
-                                            </div>
-                                        )}
+                                ) : audioBase64 ? (
+                                    <div className="w-full text-center">
+                                        <div className="mb-3">
+                                            <svg className="w-12 h-12 mx-auto text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <p className="text-sm text-gray-600 mb-3">AI 語音已就緒</p>
+                                        <button onClick={handlePlayAudio} className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center mx-auto">
+                                            <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" /></svg>
+                                            播放語音導覽
+                                        </button>
                                     </div>
                                 ) : (
-                                    <div className="text-center p-4">
-                                        <p className="text-gray-500 text-sm mb-4">生成 {data.babySize} 的 3D 模擬影片</p>
+                                    <div className="text-center">
+                                        <div className="mb-3">
+                                            <svg className="w-12 h-12 mx-auto text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <p className="text-gray-500 text-sm mb-3">聆聽 AI 語音介紹這週的寶寶發展</p>
                                         <button 
                                             onClick={handleGenerateMedia}
-                                            className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-colors"
+                                            className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
                                         >
-                                            開始生成
+                                            生成語音導覽
                                         </button>
                                         {mediaError && <p className="text-red-500 text-xs mt-2">{mediaError}</p>}
                                     </div>

@@ -7,6 +7,7 @@ import NutritionGuide from './NutritionGuide';
 import BudgetGuide from './BudgetGuide';
 import ShoppingList from './ShoppingList';
 import SubsidiesGuide from './SubsidiesGuide';
+import InsuranceGuide from './InsuranceGuide';
 
 interface DetailViewProps {
   data: WeekData;
@@ -20,6 +21,7 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
   const [showBudgetGuide, setShowBudgetGuide] = useState<boolean>(false);
   const [showShoppingList, setShowShoppingList] = useState<boolean>(false);
   const [showSubsidiesGuide, setShowSubsidiesGuide] = useState<boolean>(false);
+  const [showInsuranceGuide, setShowInsuranceGuide] = useState<boolean>(false);
   
   // Audio Generation State
   const [audioBase64, setAudioBase64] = useState<string | null>(null);
@@ -37,6 +39,7 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
     setShowBudgetGuide(false);
     setShowShoppingList(false);
     setShowSubsidiesGuide(false);
+    setShowInsuranceGuide(false);
     setActiveTab('overview');
   }, [data.week]);
 
@@ -130,6 +133,9 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
       )}
       {showSubsidiesGuide && (
         <SubsidiesGuide onClose={() => setShowSubsidiesGuide(false)} />
+      )}
+      {showInsuranceGuide && (
+        <InsuranceGuide onClose={() => setShowInsuranceGuide(false)} />
       )}
 
       {/* Header with Image */}
@@ -334,38 +340,56 @@ const DetailView: React.FC<DetailViewProps> = ({ data }) => {
         {activeTab === 'checkups' && (
             <div className="space-y-6">
                  {/* Resources & Budget Cards */}
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     {/* Subsidies Card */}
-                     <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-6 rounded-xl border border-cyan-100 shadow-sm flex flex-col justify-between">
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                     {/* Insurance Card */}
+                     <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800 shadow-sm flex flex-col justify-between">
                          <div className="mb-4">
-                             <h3 className="text-lg font-bold text-cyan-800 flex items-center">
+                             <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300 flex items-center">
+                                 <span className="text-2xl mr-2">🛡️</span> 保險規劃指南
+                             </h3>
+                             <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                                 婦嬰險、實支實付、保費試算、投保前檢查清單與保險名詞解釋。
+                             </p>
+                         </div>
+                         <button 
+                            onClick={() => setShowInsuranceGuide(true)}
+                            className="bg-blue-600 dark:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 shadow-md transition-all flex items-center justify-center"
+                         >
+                             查看保險指南
+                         </button>
+                     </div>
+                     
+                     {/* Subsidies Card */}
+                     <div className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 p-6 rounded-xl border border-cyan-100 dark:border-cyan-800 shadow-sm flex flex-col justify-between">
+                         <div className="mb-4">
+                             <h3 className="text-lg font-bold text-cyan-800 dark:text-cyan-300 flex items-center">
                                  <span className="text-2xl mr-2">🏛️</span> 補助資源大全
                              </h3>
-                             <p className="text-sm text-cyan-600 mt-1">
+                             <p className="text-sm text-cyan-600 dark:text-cyan-400 mt-1">
                                  14次公費產檢、勞保生育給付、臺南市生育獎勵與各項減免申請懶人包。
                              </p>
                          </div>
                          <button 
                             onClick={() => setShowSubsidiesGuide(true)}
-                            className="bg-cyan-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-cyan-700 shadow-md transition-all flex items-center justify-center"
+                            className="bg-cyan-600 dark:bg-cyan-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-cyan-700 dark:hover:bg-cyan-600 shadow-md transition-all flex items-center justify-center"
                          >
                              查看補助詳情
                          </button>
                      </div>
 
                      {/* Budget Card */}
-                     <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 rounded-xl border border-emerald-100 shadow-sm flex flex-col justify-between">
+                     <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 p-6 rounded-xl border border-emerald-100 dark:border-emerald-800 shadow-sm flex flex-col justify-between">
                          <div className="mb-4">
-                             <h3 className="text-lg font-bold text-emerald-800 flex items-center">
+                             <h3 className="text-lg font-bold text-emerald-800 dark:text-emerald-300 flex items-center">
                                  <span className="text-2xl mr-2">💰</span> 費用與預算規劃
                              </h3>
-                             <p className="text-sm text-emerald-600 mt-1">
+                             <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">
                                  NIPT、高層次超音波等自費項目行情整理，幫助您提前規劃產檢預算。
                              </p>
                          </div>
                          <button 
                             onClick={() => setShowBudgetGuide(true)}
-                            className="bg-emerald-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-700 shadow-md transition-all flex items-center justify-center"
+                            className="bg-emerald-600 dark:bg-emerald-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-700 dark:hover:bg-emerald-600 shadow-md transition-all flex items-center justify-center"
                          >
                              查看預算指南
                          </button>

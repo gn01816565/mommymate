@@ -1,5 +1,84 @@
 # MommyMate 更新記錄
 
+## 2026-02-03 - v1.4.0
+
+### 🌙 深色模式
+
+**新增功能：**
+- ✅ 深色模式切換按鈕（導航欄右上角）
+- ✅ 自動儲存使用者偏好
+- ✅ 系統偏好自動偵測
+- ✅ 平滑過渡動畫
+
+**深色樣式適配：**
+- App 主體背景
+- 導航欄
+- 時間軸組件
+- 詳細資訊卡片（部分）
+- 手機版下拉選單
+
+**技術：**
+- Tailwind `dark:` 類別
+- `localStorage` 持久化
+- `prefers-color-scheme` 偵測
+
+---
+
+### 📱 PWA 支援
+
+**新增功能：**
+- ✅ 可安裝到主畫面（iOS/Android/Desktop）
+- ✅ Service Worker 離線支援
+- ✅ 原生應用體驗（standalone）
+- ✅ 自訂主題顏色
+
+**實作細節：**
+- `manifest.json` PWA 清單
+- `sw.js` Service Worker
+- Cache API 快取策略
+- Apple meta tags
+
+---
+
+### 📝 已知限制
+
+**深色模式：**
+- ⚠️ DetailView 某些區域尚未完全適配
+- ⚠️ 模態視窗（營養指南等）待完善
+- ⚠️ ChatWidget 深色樣式待調整
+
+**PWA：**
+- 📸 目前使用 SVG 圖示
+- 建議未來生成 192x192 和 512x512 PNG
+
+**後續計畫：**
+- v1.4.1：完善所有組件深色樣式
+- v1.5.0：多語言支援
+
+---
+
+## 2026-02-03 - v1.3.3
+
+### 🔧 小問題修復
+
+**修復內容：**
+- ✅ 移除不存在的 `/index.css` 引用
+- ✅ 抑制 Tailwind CDN 警告
+- ✅ 添加 SVG favicon（粉紅愛心設計）
+- ✅ 修正 favicon 路徑
+
+**新增檔案：**
+- `public/favicon.svg` - 粉紅漸層愛心圖示
+- `public/FAVICON.md` - PNG 生成指南
+- `FIXES_SUMMARY.md` - 修復摘要
+
+**改善：**
+- Console 更乾淨無錯誤
+- 瀏覽器標籤顯示圖示
+- 更專業的外觀
+
+---
+
 ## 2026-02-03 - v1.3.1
 
 ### ✨ 改進錯誤訊息
